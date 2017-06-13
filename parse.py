@@ -4,7 +4,7 @@ import os
 
 list="RSYNC_INCLUDE=\""
 with open('package.list', 'w') as pkg,  open('output.list', 'w') as out:
-    with open('1.filelist_main', 'r', encoding='UTF-8') as file:
+    with open('list', 'r', encoding='UTF-8') as file:
         for line in file:
             if ".deb" not in line and ".udeb" not in line:
                 continue
