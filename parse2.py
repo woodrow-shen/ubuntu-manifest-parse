@@ -64,12 +64,12 @@ with open('package.list', 'w') as out:
             temp = line[:-1]
             if ".deb" in line:
                 try:
-                    print(temp.split('*'))
+                    #print(temp.split('*'))
                     pkg_name = temp.split('*')
                     apt_pkg = cache[pkg_name[0]]
                     ver = apt_pkg.versions
                     pkg_info = str(ver[0]).split('=')
-                    print(pkg_info)
+                    #print(pkg_info)
                     if ":" not in pkg_info[1]:
                         pkg_file = pkg_info[0] + '_' + pkg_info[1] + pkg_name[1]
                     else:
