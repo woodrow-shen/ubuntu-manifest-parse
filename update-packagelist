@@ -1,0 +1,46 @@
+#!/usr/bin/python3
+
+import os
+import sys
+import apt
+
+pkg_dicts = {}
+
+with open('bionic-classic-arch.list', 'r', encoding='UTF-8') as input:
+    for line in input:
+        temp = line[:-1]
+        package = temp.split('*')
+        arch = package[1]
+        pkg_dicts[package[0]] = arch[1:-4]
+
+#print(pkg_dicts)
+
+with open('bionic-classic-apt.list', 'w') as out:
+    with open('bionic-classic-pkgname.list', 'r', encoding='UTF-8') as file:
+        for line in file:
+            cache = apt.Cache()
+            temp = line[:-1]
+            try:
+                pkg_name = temp
+                apt_pkg = cache[pkg_name]
+                ver = apt_pkg.candidate
+                pkg_info = str(ver).split('=')
+                if ":" not in pkg_info[1]:
+                    pkg_file = pkg_name + '_' + pkg_info[1] + '_' + pkg_dicts[pkg_name] +".deb" 
+                else:
+                    pkg_file = pkg_name + '_' + pkg_info[1].split(':')[1] + '_' + pkg_dicts[pkg_name] +".deb"
+                out.write(pkg_file + '\n')
+            except KeyError as err:
+                print("KeyError %s" % format(err))
+                if pkg_name == "linux-headers-4.13.0-":
+                    pkg_file = pkg_name + "*_all.deb"
+                    print(pkg_file)
+                    out.write(pkg_file + '\n')
+                elif pkg_name == "linux-headers-4.13.0-*-generic" or \
+                     pkg_name == "linux-image-4.13.0-*-generic" or pkg_name == "linux-image-extra-4.13.0-*-generic" or \
+                     pkg_name == "linux-signed-image-4.13.0-*-generic":
+                    pkg_file = pkg_name + "*_amd64.deb"
+                    print(pkg_file)
+                    out.write(pkg_file + '\n')
+                else:
+                    out.write(line)
